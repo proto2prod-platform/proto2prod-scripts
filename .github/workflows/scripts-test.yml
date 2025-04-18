@@ -1,0 +1,16 @@
+name: Scripts CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run script tests
+        run: |
+          bash scripts/tests/test_scripts.py
