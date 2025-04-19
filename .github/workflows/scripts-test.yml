@@ -3,14 +3,31 @@ name: Scripts CI
 on:
   push:
     branches: [ main ]
+    paths:
+      - '**.sh'
+      - '**.py'
+      - 'tests/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - '**.sh'
+      - '**.py'
+      - 'tests/**'
 
 jobs:
   test-scripts:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Run script tests
-        run: |
-          bash scripts/tests/test_scripts.py
+      - uses: actions/checkout@v4
+      - name: Set up Python # Needed for generate_project_xml.py and test runner
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install test dependencies (if any)
+        run: pip install pytest # Assuming pytest is used for Python tests
+      - name: Make scripts executable
+        run: chmod +x *.sh
+      - name: Run script tests (Python)
+        run: pytest tests/test_scripts.py # Assuming this runs the bash scripts via subprocess
+      - name: Run Python script directly (basic check)
+        run: python generate_project_xml.py
